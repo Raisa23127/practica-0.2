@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">📁 Загрузка Excel-файла</h3>
+        <p class="text-muted">Загрузите файл с адресами для обработки.</p>
+        
+        <form method="POST" enctype="multipart/form-data" class="mt-3">
+            <div class="mb-3">
+                <label for="fileInput" class="form-label">Выберите файл (.xlsx)</label>
+                <input type="file" class="form-control" id="fileInput" name="file" accept=".xlsx" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Загрузить и обработать</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h4 class="card-title">📜 История загрузок</h4>
+        {% if uploads %}
+            <div class="list-group">
+                {% for upload in uploads %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ upload.filename }}</strong><br>
+                        <small class="text-muted">Загружено: {{ upload.uploaded_at }}</small>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ upload.address_count }} адресов</span>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Пока нет загруженных файлов.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
