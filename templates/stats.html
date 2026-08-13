@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">📊 Статистика системы</h2>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">📁 Всего загрузок</h5>
+                <h2 class="display-4">{{ total_uploads }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">📍 Всего адресов</h5>
+                <h2 class="display-4">{{ total_addresses }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>📈 Адреса по файлам</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="addressChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>👤 Активность пользователей</h5>
+    </div>
+    <div class="card-body">
+        <ul class="list-group">
+            {% for username, count in user_stats.items() %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ username }}
+                <span class="badge bg-primary rounded-pill">{{ count }} загрузок</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">← Назад в панель</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('addressChart');
+
+    // Получаем готовые данные в формате JSON из Python
+    const fileNames = {{ file_names_json | safe }};
+    const fileCounts = {{ file_counts_json | safe }};
+
+    // Список красивых разноцветных цветов для столбиков
+    const colors = [
+        'rgba(54, 162, 235, 0.7)',   // Синий
+        'rgba(255, 99, 132, 0.7)',   // Розовый
+        'rgba(255, 206, 86, 0.7)',   // Жёлтый
+        'rgba(75, 192, 192, 0.7)',   // Бирюзовый
+        'rgba(153, 102, 255, 0.7)',  // Фиолетовый
+        'rgba(255, 159, 64, 0.7)'    // Оранжевый
+    ];
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: fileNames,
+            datasets: [{
+                label: 'Количество адресов',
+                data: fileCounts,
+                backgroundColor: colors, // Здесь мы передаем массив цветов!
+                borderColor: colors.map(color => color.replace('0.7', '1')), // Делаем границы ярче
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
