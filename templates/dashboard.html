@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h1 class="card-title">Главная панель</h1>
+        <p class="card-text">
+            Добро пожаловать, <strong>{{ current_user.username }}</strong>! 
+            Вы успешно вошли в систему.
+        </p>
+        <p>Используйте меню ниже для работы с системой.</p>
+        
+        <div class="d-grid gap-2 d-md-block mt-3">
+            <a href="{{ url_for('uploads_page') }}" class="btn btn-primary btn-lg">
+                📁 Перейти к загрузке Excel
+            </a>
+            <a href="{{ url_for('stats_page') }}" class="btn btn-info btn-lg text-white ms-2">
+                📊 Смотреть статистику
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
